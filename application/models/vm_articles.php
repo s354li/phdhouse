@@ -42,7 +42,21 @@ class VM_articles extends CI_Model {
 
         //get a specific article by article id
         public function get_specific_entry($article_id){
+                $CI =& get_instance();
+                $CI->load->model('articles');
+                $this->load->database();
+                $query = $this->db->query("select Articles.ArticleID, Articles.Title, Articles.SubTitle, Articles.Main_Figure, Articles.Content, Articles.SubmitDate, Articles.Score, 
+                        count(RefUserArticleCollection.UserID) as ShareNum, count(RefArticleLike.UserID) as LikeNum, count(Comments.CommentID) as CommentNum 
+                        from ((Articles left join Comments on Articles.ArticleID = Comments.ArticleID) left join RefUserArticleCollection on Articles.ArticleID = RefUserArticleCollection.
+                        ArticleID) left join RefArticleLike on Articles.ArticleID = RefArticleLike.ArticleID
+                        where Articles.ApprovedFlag = 'T' and Articles.ArticleID = ". $article_id);
+                $row = $query->row_array();
 
+                if (isset($row))
+                {
+                        return $CI->articles->populate_detail_article($row);
+                }
+                return null;
         }
 
         //get the first 20 comments for an article
