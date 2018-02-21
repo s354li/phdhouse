@@ -35,7 +35,8 @@ class Home extends CI_Controller {
 
 	public function displayarticle($ArticleID)
 	{
-		$this->load->view('article_display');
+		$data['CurrentArticle'] = $this->vm_articles->get_specific_entry($ArticleID);
+		$this->load->view('article_display', $data);
 	}
 
 

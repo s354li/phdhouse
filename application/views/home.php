@@ -41,7 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div>
    								<div class="col-md-12">
       								<div class="col-sm-9">
-        								<h4><strong><a href="article/<?php echo $row->id; ?>"><?php echo $row->title; ?></a></strong></h4>
+        								<h4><strong><a href="index.php/home/displayarticle/<?php echo $row->id; ?>"><?php echo $row->title; ?></a></strong></h4>
                       </div>
                       <div class="col-sm-9">
                         <h5><a href="#"><?php echo $row->subtitle; ?></a></h5>

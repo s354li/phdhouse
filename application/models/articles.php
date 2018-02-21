@@ -62,24 +62,25 @@ class Articles extends CI_Model {
                 return $home_article;
         }
 
-        public function populate_specific_article($rowdata){
-                $this->id = $rowdata['ArticleID'];
-                $this->title = $rowdata['Title'];
-                $this->subtitle = $rowdata['SubTitle'];
-                $this->main_figure = $rowdata['Main_Figure'];
-                $this->content = $rowdata['Content'];
-                $this->date = $rowdata['SubmitDate'];
-                $this->score = $rowdata['Score'];
-                $this->sharenum = $rowdata['ShareNum'];
-                $this->likenum = $rowdata['LikeNum'];
-                $this->commentnum = $rowdata['CommentNum'];
+        public function populate_detail_article($rowdata){
+                $detail_article = new Articles;
+                $detail_article->id = $rowdata['ArticleID'];
+                $detail_article->title = $rowdata['Title'];
+                $detail_article->subtitle = $rowdata['SubTitle'];
+                $detail_article->main_figure = $rowdata['Main_Figure'];
+                $detail_article->content = $rowdata['Content'];
+                $detail_article->date = $rowdata['SubmitDate'];
+                $detail_article->score = $rowdata['Score'];
+                $detail_article->sharenum = $rowdata['ShareNum'];
+                $detail_article->likenum = $rowdata['LikeNum'];
+                $detail_article->commentnum = $rowdata['CommentNum'];
 
                 $CI =& get_instance();
                 $CI->load->model('tags');
 
                 $this->load->database();
 
-                //populate tags
+                //populate the tag parts of the article using tag model
                 $tag_query = $this->db->query("select DefTag.TagID, DefTag.TagName, DefTag.TagProperty from DefTag, RefArticleTag where DefTag.TagID = RefArticleTag.TagID and 
                         RefArticleTag.ArticleID = ".$rowdata['ArticleID']);
                 $article_tags = array();
@@ -87,23 +88,39 @@ class Articles extends CI_Model {
                 {   
                         array_push($article_tags, $CI->tags->populate_tag_entry($row));  
                 }
-                $this->tags = $article_tags;
+                $detail_article->tags = $article_tags;
+
+                //populate the author parts of the article using the author model
+                $CI->load->model('users');
+                $author_query = $this->db->query("select Users.UserID, Users.User_Name, Users.First_Name, Users.Last_Name, Users.Password, Users.Country, Users.PhoneNumber, 
+                        Users.Email, Users.Level, Users.Photo from Users, RefArticleAuthor where RefArticleAuthor.AuthorID = Users.UserID 
+                        and RefArticleAuthor.ArticleID = ". $rowdata['ArticleID']);
+
+                $article_authors = array();
+                foreach($author_query->result_array() as $row)
+                {
+                        array_push($article_authors, $CI->users->populate_user_entry($row));
+                }
+                $detail_article->authors = $article_authors;
 
 
                 //populate comments
-                $Comment_CI =& get_instance();
-                $Comment_CI->load->model('comments');
-
-                $comment_query = $this->db->query("select DefTag.TagID, DefTag.TagName, DefTag.TagProperty from DefTag, RefArticleTag where DefTag.TagID = RefArticleTag.TagID and 
-                        RefArticleTag.ArticleID = ".$rowdata['ArticleID']);
+                $CI->load->model('comments');
+                $first_comment_query = $this->db->query("select Comments.CommentID, Comments.Title, Comments.SubmitDate, 
+                        Comments.Content, Comments.Author, Comments.ParentCommentID, Comments.ArticleID, 
+                        Users.User_Name, Users.First_Name, Users.Last_Name, Users.Password, Users.Country, 
+                        Users.PhoneNumber, Users.Email, Users.Level, Users.Photo, count(RefCommentLike.Pkey) as LikeNum
+                         from Comments, Users, RefCommentLike where Comments.Author = Users.UserID 
+                         and Comments.CommentID = RefCommentLike.CommentID 
+                         and Comments.ArticleID = ".$rowdata['ArticleID']. " group by Comments.CommentID");
                 $article_comments = array();
-                foreach ($comment_query->result_array() as $row)
+                foreach ($first_comment_query->result_array() as $row)
                 {   
                         array_push($article_comments, $CI->comments->populate_comment_entry($row));  
                 }
-                $this->comments = $article_comments;
+                $detail_article->comments = $article_comments;
 
-                return $this;
+                return $detail_article;
         }
 
 }
