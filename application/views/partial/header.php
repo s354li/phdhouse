@@ -6,8 +6,8 @@
       				<img src="<?php echo base_url();?>pic/homepage_logo.png"></img>
     			</div>
     			<ul class="nav navbar-nav">
-      				<li <?php if($activemenu == "home") { ?>class="active" <?php } ?>><a href="#">首页</a></li>
-              <li <?php if($activemenu == "article") { ?>class="active" <?php } ?>><a href="#">文章</a></li>
+      				<li <?php if($activemenu == "home") { ?>class="active" <?php } ?>><a href="<?php echo site_url('home/index') ?>">首页</a></li>
+              <li <?php if($activemenu == "article") { ?>class="active" <?php } ?>><a href="<?php echo site_url('home/displayarticle/1') ?>">文章</a></li>
       				<li <?php if($activemenu == "topic") { ?>class="active" <?php } ?>><a href="#">话题</a></li>
       				<li <?php if($activemenu == "news") { ?>class="active" <?php } ?>><a href="#">协会新闻</a></li>
       				<li <?php if($activemenu == "aboutus") { ?>class="active" <?php } ?>><a href="#">关于我们</a></li>
