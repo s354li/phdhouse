@@ -120,7 +120,10 @@
             </div>
         </div>
         
-        <script>    
+        <script>  
+            
+            //for debug
+            alert(window.location.pathname);
             
             var fd = new FormData();
             
