@@ -49,7 +49,7 @@
                         <br><br>
                         <input id="inputPassword" type="password" />
                         <br><br>
-                        <a    style="   text-decoration: none;  "  >   <p>忘记密码</p>     </a>
+                        <a style="text-decoration: none;"><p>忘记密码</p></a>
                         <br><br>
                     </div>
 
@@ -120,10 +120,7 @@
             </div>
         </div>
         
-        <script>  
-            
-            //for debug
-            alert(window.location.pathname);
+        <script>
             
             var fd = new FormData();
             
@@ -133,19 +130,32 @@
                     
                     fd.append("username", $("#inputUsername").val());
                     fd.append("password", $("#inputPassword").val());
-
+                    
                     $.ajax({
-
-                        url: 'http://127.0.0.1/anson_test.php?'+$.param({"command": "signin"}),
+                        url: "http://127.0.0.1/index.php/UserQueryLogin/QueryLogin",
                         type: "post",
                         data: fd,
                         contentType: false,
                         processData: false,
-                        success: (data)=>{
-
-                            alert(data);
+                        success: (return_msg)=>{
+                            
+                            if(return_msg.includes("invalid username")){
+                                
+                                alert("用户名不存在");
+                            }
+                            else if(return_msg.includes("password correct")){
+                                
+                                alert("登录成功");
+                            }
+                            else if(return_msg.includes("password incorrect")){
+                                
+                                alert("密码错误");
+                            }
+                            else{
+                                
+                            }
                         }
-                    });  
+                    });
                 }
                 else{
                     
@@ -170,49 +180,64 @@
                 fd.append("password", $("#createPassword").val());
                 
                 $.ajax({
-
-                    url: 'http://127.0.0.1/anson_test.php?'+$.param({"command": "signup"}),
+                    
+                    url: "http://127.0.0.1/index.php/UserQueryRegister/QueryRegister",
                     type: "post",
                     data: fd,
                     contentType: false,
                     processData: false,
-                    success: (data)=>{
+                    success: (return_msg)=>{
                         
-                        alert("注册成功");
+                        if(return_msg.includes("succeed")){
+                            
+                            alert("注册成功");
+                        }
+                        else if(return_msg.includes("not succeed")){
+                            
+                            alert("注册不成功");
+                        }
+                        else{
+                            
+                            alert(return_msg);
+                        }
                     }
                 });
             });
 //--
 //--real-time checking username availability
 //--
-            var count_letter = 0;
-            var count_number = 0;
             $("#createUsername").on('input', ()=>{
                 
                 var letterStr = "abcdefghijklmnopqrstuvwxyz";
                 var numberStr = "1234567890";
                 
-                for(i=0; i<letterStr.length; i++){
+                var count_letter = 0;
+                var count_number = 0;
+
+                for(i=0; i<$("#createUsername").val().length; i++){
                     
-                    if( $("#createUsername").val().charAt( $("#createUsername").val().length-1 ) == letterStr.charAt(i) ){
-                        
-                        count_letter++; 
+                    for(j=0; j<letterStr.length; j++){
+
+                        if( $("#createUsername").val().charAt( i ) == letterStr.charAt(j) ){
+
+                            count_letter++; 
+                        }
+                        else{
+
+                        }
                     }
-                    else{
-                       
+
+                    for(j=0; j<numberStr.length; j++){
+
+                        if( $("#createUsername").val().charAt( i ) == numberStr.charAt(j) ){
+
+                            count_number++; 
+                        }
+                        else{
+
+                        }
                     }
                 }
-                
-                for(i=0; i<numberStr.length; i++){
-                    
-                    if( $("#createUsername").val().charAt( $("#createUsername").val().length-1 ) == numberStr.charAt(i) ){
-                        
-                        count_number++; 
-                    }
-                    else{
-                       
-                    }
-                } 
                 
                 //for debug, for username, password input verification
                 $("#createVerifyUsername").html("letter: "+count_letter+";number: "+count_number);
