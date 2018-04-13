@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<title>首页</title>
 </head>
@@ -19,7 +19,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="panel panel-default">
   				<div class="panel-body">
   					<div>
-    					<button type="button" class="btn btn-primary">发布文章</button>
+							<a class="btn btn-primary" href="<?=site_url('article/post')?>" role="button">发布文章</a>
     					<button type="button" class="btn btn-primary">分享想法</button>
     					<button type="button" class="btn btn-primary pull-right">我的草稿</button>
     				</div>
@@ -66,7 +66,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         								<p>
           									<i class="icon-user"></i> 作者：
                             <?php for($i=0; $i<count($row->authors) - 1; $i++){ ?>
-                            <a href="#"><?php echo ($row->authors)[i]->firstname. " ". ($row->authors)[i]->lastname; ?></a>, 
+                            <a href="#"><?php echo ($row->authors)[i]->firstname." ". ($row->authors)[i]->lastname; ?></a>, 
                             <?php } ?> 
                             <a href="#"><?php echo ($row->authors)[count($row->authors) - 1]->firstname. " ". ($row->authors)[count($row->authors) - 1]->lastname; ?></a>
 								          | <i class="icon-calendar"></i> 日期：<?php echo date('Y-m-d', strtotime($row->date)); ?>
