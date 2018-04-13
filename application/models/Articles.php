@@ -123,4 +123,59 @@ class Articles extends CI_Model {
                 return $detail_article;
         }
 
+        public function add_article($rowdata,$main_figure,$tags,$authors){
+
+
+                $CI =& get_instance();
+                $CI->load->model('figures');
+                $CI->load->model('refarticlefigure');
+                $CI->load->model('refarticletag');
+                $CI->load->model('refarticleauthor');
+                $this->load->database();
+                $this->db->trans_begin();
+                try{
+                        $figure_id = $CI->figures->add_figure($main_figure);
+                        $rowdata['Main_Figure'] = $figure_id;
+        
+        
+                        $this->db->insert('articles',$rowdata);
+                        $articleID = $this->db->insert_id();
+        
+        
+                        $CI->refarticlefigure->add(array(
+                                'ArticleID'=>$articleID,
+                                'FigureID'=>$figure_id,
+                                'FigureLocation'=>$main_figure['StoreLocation']
+                        ));
+
+                        $CI->refarticlefigure->add(array(
+                                'ArticleID'=>$articleID,
+                                'FigureID'=>$figure_id,
+                                'FigureLocation'=>$main_figure['StoreLocation']
+                        ));
+
+                        foreach($tags as $key=>$val){
+                                $CI->refarticletag->add(array(
+                                        'articleID'=>$articleID,
+                                        'TagID'=>$val,   
+                                ));
+                        }
+
+                        foreach($authors as $key=>$val){
+                                $CI->refarticleauthor->add(array(
+                                        'articleID'=>$articleID,
+                                        'AuthorID'=>$val,   
+                                ));
+                        }
+                }
+                catch(Exception $e){
+                        throw $e;
+                        $this->db->trans_rollback();
+                }
+                
+                if ($this->db->trans_status() === FALSE)
+                    $this->db->trans_rollback();
+                else
+                    $this->db->trans_commit();
+        }
 }

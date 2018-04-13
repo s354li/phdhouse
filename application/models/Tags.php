@@ -16,4 +16,13 @@ class Tags extends CI_Model {
                 return $instance_tag;
         }
 
+        public function get_all_tags(){
+                $this->load->database();
+                $query = $this->db->get('DefTag');
+                $all_tags = array();
+                foreach ($query->result_array() as $row)
+                        $all_tags[] = $row;
+                return $all_tags;
+        }
+
 }
